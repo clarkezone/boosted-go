@@ -9,10 +9,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/clarkezone/pocketshorten/internal"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	clarkezoneLog "github.com/clarkezone/pocketshorten/pkg/log"
+	"github.com/clarkezone/boosted-go/internal"
+
+	clarkezoneLog "github.com/clarkezone/boosted-go/log"
 )
 
 type cleanupfunc func()
