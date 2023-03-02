@@ -5,8 +5,9 @@ import (
 	"os"
 	"testing"
 
-	clarkezoneLog "github.com/clarkezone/pocketshorten/pkg/log"
 	"github.com/sirupsen/logrus"
+
+	clarkezoneLog "github.com/clarkezone/boosted-go/log"
 )
 
 // TestMain initizlie all tests
