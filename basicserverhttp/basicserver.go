@@ -1,5 +1,5 @@
 // Package basicserver contains a dummy server implementation for testing metrics and logging
-package basicserver
+package basicserverhttp
 
 import (
 	"context"

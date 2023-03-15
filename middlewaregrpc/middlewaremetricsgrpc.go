@@ -1,15 +1,16 @@
-package basicserver
+package basicservergrpc
 
 import (
 	"context"
 	"fmt"
 	"time"
 
-	clarkezoneLog "github.com/clarkezone/pocketshorten/pkg/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
+
+	clarkezoneLog "github.com/clarkezone/boosted-go/log"
 )
 
 // PromMetricsMiddlewareGrpc adds simple prometheus metrics type PromMetricsMiddlewareGrpc

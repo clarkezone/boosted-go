@@ -1,4 +1,4 @@
-package basicserver
+package basicserverhttp
 
 import (
 	"net/http"
