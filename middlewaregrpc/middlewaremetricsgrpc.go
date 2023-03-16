@@ -1,4 +1,4 @@
-package basicservergrpc
+package middlewaregrpc
 
 import (
 	"context"
