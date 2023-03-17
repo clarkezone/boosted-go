@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
@@ -15,7 +18,7 @@ import (
 	clarkezoneLog "github.com/clarkezone/boosted-go/log"
 )
 
-// type cleanupfunc func()
+type cleanupfunc func()
 
 // Grpc object
 type Grpc struct {
@@ -113,23 +116,23 @@ func (bs *Grpc) WaitforInterupt() error {
 	return bs.Shutdown()
 }
 
-// func handleSig(cleanupwork cleanupfunc) chan struct{} {
-// 	signalChan := make(chan os.Signal, 1)
-// 	cleanupDone := make(chan struct{})
-// 	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
-// 	go func() {
-// 		<-signalChan
-// 		clarkezoneLog.Debugf("\nhandleSig Received an interrupt, stopping services...\n")
-// 		if cleanupwork != nil {
-// 			clarkezoneLog.Debugf("cleanup work found")
-// 			cleanupwork()
-// 			clarkezoneLog.Debugf("cleanup work completed")
-// 		}
+func handleSig(cleanupwork cleanupfunc) chan struct{} {
+	signalChan := make(chan os.Signal, 1)
+	cleanupDone := make(chan struct{})
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-signalChan
+		clarkezoneLog.Debugf("\nhandleSig Received an interrupt, stopping services...\n")
+		if cleanupwork != nil {
+			clarkezoneLog.Debugf("cleanup work found")
+			cleanupwork()
+			clarkezoneLog.Debugf("cleanup work completed")
+		}
 
-// 		close(cleanupDone)
-// 	}()
-// 	return cleanupDone
-// }
+		close(cleanupDone)
+	}()
+	return cleanupDone
+}
 
 // Shutdown terminates the listening thread
 func (bs *Grpc) Shutdown() error {
