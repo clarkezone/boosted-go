@@ -3,8 +3,7 @@ package internal
 
 const (
 	// LogLevelVar is name of environment variable containing loglevel
-	LogLevelVar     = "loglevel"
-	defaultLogLevel = "Warn"
+	LogLevelVar = "loglevel"
 
 	// TargetRepoVar is name of environment variable containing target repo URL
 	TargetRepoVar = "targetrepo"
