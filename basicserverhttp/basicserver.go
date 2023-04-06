@@ -11,8 +11,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/clarkezone/boosted-go/internal"
-
 	clarkezoneLog "github.com/clarkezone/boosted-go/log"
 )
 
@@ -42,13 +40,13 @@ func DefaultMux() *http.ServeMux {
 }
 
 // StartListen Start listening for a connection
-func (bs *BasicServer) StartListen(secret string, mux http.Handler) {
-	clarkezoneLog.Successf("starting... basic server on :%v", fmt.Sprint(internal.Port))
+func (bs *BasicServer) StartListen(port int, secret string, mux http.Handler) {
+	clarkezoneLog.Successf("starting... basic server on :%v", fmt.Sprint(port))
 
 	bs.exitchan = make(chan bool)
 	bs.ctx, bs.cancel = context.WithCancel(context.Background())
 
-	bs.httpserver = &http.Server{Addr: ":" + fmt.Sprint(internal.Port)}
+	bs.httpserver = &http.Server{Addr: ":" + fmt.Sprint(port)}
 	bs.httpserver.Handler = mux
 
 	go func() {
@@ -64,15 +62,15 @@ func (bs *BasicServer) StartListen(secret string, mux http.Handler) {
 }
 
 // StartMetrics Start listening for a connection for metrics
-func (bs *BasicServer) StartMetrics() {
-	clarkezoneLog.Successf("starting... metrics on :%v", fmt.Sprint(internal.MetricsPort))
+func (bs *BasicServer) StartMetrics(metricsPort int) {
+	clarkezoneLog.Successf("starting... metrics on :%v", fmt.Sprint(metricsPort))
 
 	if bs.ctx == nil {
 		bs.ctx, bs.cancel = context.WithCancel(context.Background())
 	}
 
 	bs.metricsexitchan = make(chan bool)
-	bs.metricsserver = &http.Server{Addr: ":" + fmt.Sprint(internal.MetricsPort)}
+	bs.metricsserver = &http.Server{Addr: ":" + fmt.Sprint(metricsPort)}
 	bs.metricsserver.Handler = promhttp.Handler()
 
 	go func() {

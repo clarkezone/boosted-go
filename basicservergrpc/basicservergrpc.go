@@ -13,8 +13,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 
-	"github.com/clarkezone/boosted-go/internal"
-
 	clarkezoneLog "github.com/clarkezone/boosted-go/log"
 )
 
@@ -44,12 +42,12 @@ func (bs *Grpc) AddUnaryInterceptor(i grpc.UnaryServerInterceptor) {
 }
 
 // StartListen Start listening for a connection
-func (bs *Grpc) StartListen(secret string) *grpc.Server {
-	clarkezoneLog.Successf("starting... basic grpc server on :%v", fmt.Sprint(internal.Port))
+func (bs *Grpc) StartListen(port int, secret string) *grpc.Server {
+	clarkezoneLog.Successf("starting... basic grpc server on :%v", fmt.Sprint(port))
 
 	bs.exitchan = make(chan bool)
 	bs.ctx, bs.cancel = context.WithCancel(context.Background())
-	lis, err := net.Listen("tcp", "0.0.0.0:"+fmt.Sprint(internal.Port))
+	lis, err := net.Listen("tcp", "0.0.0.0:"+fmt.Sprint(port))
 	if err != nil {
 		panic(err)
 	}
@@ -79,15 +77,15 @@ func (bs *Grpc) StartListen(secret string) *grpc.Server {
 }
 
 // StartMetrics Start listening for a connection for metrics
-func (bs *Grpc) StartMetrics() {
-	clarkezoneLog.Successf("starting... metrics on :%v", fmt.Sprint(internal.MetricsPort))
+func (bs *Grpc) StartMetrics(metricsPort int) {
+	clarkezoneLog.Successf("starting... metrics on :%v", fmt.Sprint(metricsPort))
 
 	if bs.ctx == nil {
 		bs.ctx, bs.cancel = context.WithCancel(context.Background())
 	}
 
 	bs.metricsexitchan = make(chan bool)
-	bs.metricsserver = &http.Server{Addr: ":" + fmt.Sprint(internal.MetricsPort)}
+	bs.metricsserver = &http.Server{Addr: ":" + fmt.Sprint(metricsPort)}
 	bs.metricsserver.Handler = promhttp.Handler()
 
 	go func() {
