@@ -103,13 +103,19 @@ func (bs *Grpc) StartMetrics() {
 }
 
 // WaitforInterupt Wait for a sigterm event or for user to press control c when running interacticely
-func (bs *Grpc) WaitforInterupt() error {
+func (bs *Grpc) WaitforInterupt(cleanup cleanupfunc) error {
 	if bs.exitchan == nil {
 		clarkezoneLog.Debugf("WaitForInterupt(): server not started\n")
 		return fmt.Errorf("server not started")
 	}
 	ch := make(chan struct{})
-	handleSig(func() { close(ch) })
+	handleSig(func() {
+
+		if cleanup != nil {
+			cleanup()
+		}
+		close(ch)
+	})
 	clarkezoneLog.Successf("Waiting for user to press control c or sig terminate\n")
 	<-ch
 	clarkezoneLog.Debugf("Terminate signal detected, closing job manager\n")
