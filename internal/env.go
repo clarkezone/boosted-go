@@ -1,15 +1,6 @@
 // Package internal contains environment variables
 package internal
 
-import (
-	"errors"
-	"fmt"
-	"os"
-	"path"
-
-	clarkezoneLog "github.com/clarkezone/boosted-go/log"
-)
-
 const (
 	// LogLevelVar is name of environment variable containing loglevel
 	LogLevelVar     = "loglevel"
@@ -79,43 +70,4 @@ var (
 )
 
 func init() {
-}
-
-func getDefaultKubeConfig() string {
-	dirName, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
-
-	p := path.Join(dirName, ".kube/config")
-
-	if _, err := os.Stat(p); errors.Is(err, os.ErrNotExist) {
-		clarkezoneLog.Debugf("getdefaultKubeConfig(): default not detected")
-		return ""
-	}
-
-	clarkezoneLog.Debugf("getDefaultKubeConfig(): found default kube config:%v", p)
-	return p
-}
-
-// ValidateEnv validates environment variables
-func ValidateEnv() error {
-	clarkezoneLog.Debugf("ValidateEnv called")
-	if Port == 0 {
-		clarkezoneLog.Debugf("ValudateEnv() error port == 0")
-		return fmt.Errorf("bad port")
-	}
-	if MetricsPort == 0 {
-		clarkezoneLog.Debugf("ValudateEnv() error etricsport == 0")
-		return fmt.Errorf("bad port")
-	}
-	if TargetRepo == "" {
-		clarkezoneLog.Errorf("TargetRepo empty")
-		return fmt.Errorf("TargetRepo empty")
-	}
-	if LocalDir == "" {
-		clarkezoneLog.Errorf("LocalDir empty")
-		return fmt.Errorf("LocalDir empty")
-	}
-	return nil
 }
